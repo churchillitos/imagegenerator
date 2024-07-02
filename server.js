@@ -5,7 +5,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -18,6 +18,7 @@ app.post('/generate-image', async (req, res) => {
     const { prompt, style } = req.body;
 
     if (!prompt || !style) {
+        console.log('Missing prompt or style');
         return res.json({ error: 'Missing prompt or style' });
     }
 
