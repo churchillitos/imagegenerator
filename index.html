@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        select, input {
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #generatedImage {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Generator</h1>
+    <form id="imageForm">
+        <label for="prompt">Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required><br><br>
+        <label for="style">Style:</label>
+        <select id="style" name="style" required>
+            <option value="1">Anime</option>
+            <option value="2">Fantasy</option>
+            <option value="3">Pencil</option>
+            <option value="4">Digital</option>
+            <option value="5">Vintage</option>
+            <option value="6">3D (Render)</option>
+            <option value="7">Cyberpunk</option>
+            <option value="8">Manga</option>
+            <option value="9">Realistic</option>
+            <option value="10">Demonic</option>
+            <option value="11">Heavenly</option>
+            <option value="12">Comic</option>
+            <option value="13">Robotic</option>
+        </select><br><br>
+        <button type="submit">Generate Image</button>
+    </form>
+    <div id="result">
+        <h2>Generated Image:</h2>
+        <img id="generatedImage" src="" alt="Generated Image" style="display:none;">
+    </div>
+    <script>
+        document.getElementById('imageForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const prompt = document.getElementById('prompt').value;
+            const style = document.getElementById('style').value;
+
+            try {
+                const response = await fetch('/generate-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt, style })
+                });
+
+                const result = await response.json();
+                if (result.error) {
+                    alert(result.error);
+                } else {
+                    const imageUrl = result.imageUrl;
+                    const generatedImage = document.getElementById('generatedImage');
+                    generatedImage.src = imageUrl;
+                    generatedImage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error generating image:', error);
+                alert('An error occurred while generating the image.');
+            }
+        });
+    </script>
+</body>
+</html>
